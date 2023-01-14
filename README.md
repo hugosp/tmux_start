@@ -16,3 +16,4 @@ to connect to them.
 The configuration file is `panes.cfg` and is a simple ini-file.
 The windows is defined by the section headers and the panes in each
 window is defined by the options in the section.
+Each option is a pane and the value is the server to connect to.

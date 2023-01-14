@@ -2,9 +2,6 @@
 declare -A windows
 declare -a panes
 
-# windows["dalahest"]="hugo@dalahest.se,hugo@dalahest.se"
-# windows["raspberry"]="hugo@192.168.1.18,hugo@192.168.1.18"
-
 # ceck if panes.cfg exists
 if [ ! -f panes.cfg ]; then
 	echo "panes.cfg not found"
