@@ -1,0 +1,48 @@
+#!/bin/bash
+declare -A windows
+declare -a panes
+
+# windows["dalahest"]="hugo@dalahest.se,hugo@dalahest.se"
+# windows["raspberry"]="hugo@192.168.1.18,hugo@192.168.1.18"
+
+# ceck if panes.cfg exists
+if [ ! -f panes.cfg ]; then
+	echo "panes.cfg not found"
+	exit 1
+fi
+
+# read panes.cfg
+while read line
+do
+	if [[ $line =~ ^(\[)(.*)(\])$ ]]
+	then
+		section=${BASH_REMATCH[2]}
+	elif [[ $line ]]
+	then
+		windows[$section]="${windows[$section]} $line"
+	fi
+done < panes.cfg
+
+# print all windows
+for key in "${!windows[@]}"; do
+	VALUE="${windows[$key]}"
+	echo "$key: $VALUE"
+done
+
+# start base window on localhost
+tmux new-session -n 'localhost' -d
+
+for key in "${!windows[@]}"; do
+	panes=(${windows[$key]})
+
+	# create window with first pane
+	tmux new-window -n "$key" "ssh ${panes[0]}"
+
+	# loop all but first pane
+	for pane in "${panes[@]:1}"; do
+		tmux split-window -h "ssh $pane"
+	done
+
+done
+
+tmux -2 attach-session -d
